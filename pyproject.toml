@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "guardian"
+version = "0.1.0"
+description = "Utilize decorator functions on API routes with FileUpload to scan the file for viruses."
+authors = ["Josh Jarabek <jarabekjosh@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.111"
+pydantic = "^2.7.2"
+
+
+[tool.poetry.group.test.dependencies]
+pytest ="^7.0"
+pytest-mock = "*"
+pytest-asyncio = "^0.23"
+httpx = "^0.25"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
