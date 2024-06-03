@@ -37,12 +37,12 @@ TODO - Not on PyPi yet, we have a long way to go. Placeholder.
 
 ```python
 from fastapi import FastAPI, File, UploadFile
-from guardian import clamav_scanner
+from guardian import scan_upload
 
 app = FastAPI()
 
 @app.post("/upload")
-@clamav_scanner()
+@scan_upload()
 async def upload_file(file: UploadFile = File(...)):
     # Process the clean file
     pass
