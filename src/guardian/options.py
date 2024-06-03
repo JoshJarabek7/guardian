@@ -1,80 +1,81 @@
 """Contains the ClamAVScannerOptions class to configure the scanner options"""
+
 from pydantic import BaseModel
 from typing import List, Literal
 from .guardian_logger import guardian_logger
 
 
 PUA_TYPES = Literal[
-        "Andr.Adware",
-        "Andr.Downloader",
-        "Andr.Dropper",
-        "Andr.Tool",
-        "Andr.Trojan",
-        "Andr.Virus",
-        "Cert.Revoked",
-        "Doc.Dropper",
-        "Doc.Packed",
-        "Doc.Tool",
-        "Doc.Trojan",
-        "Email.Phishing",
-        "Email.Trojan",
-        "Embedded.File",
-        "Html.Exploit",
-        "Html.Tool",
-        "Html.Trojan",
-        "Java.Exploit",
-        "Java.Packer",
-        "Js.Exploit",
-        "Osx.File",
-        "Osx.Trojan",
-        "Packed.Tool",
-        "Pdf.Exploit",
-        "Pdf.Trojan",
-        "Php.Trojan",
-        "Rtf.Exploit",
-        "Spy.Tool",
-        "Swf.Spyware",
-        "Tool.Countermeasure",
-        "Tool.Tool",
-        "Unix.Adware",
-        "Unix.Coinminer",
-        "Unix.Downloader",
-        "Unix.File",
-        "Unix.Malware",
-        "Unix.Tool",
-        "Unix.Trojan",
-        "Unix.Virus",
-        "Win.Adware",
-        "Win.Coinminer",
-        "Win.Downloader",
-        "Win.Dropper",
-        "Win.Exploit",
-        "Win.File",
-        "Win.Ircbot",
-        "Win.Joke",
-        "Win.Keylogger",
-        "Win.Malware",
-        "Win.Packed",
-        "Win.Packer",
-        "Win.Proxy",
-        "Win.Ransomware",
-        "Win.Spyware",
-        "Win.Tool",
-        "Win.Trojan",
-        "Win.Virus"
+    "Andr.Adware",
+    "Andr.Downloader",
+    "Andr.Dropper",
+    "Andr.Tool",
+    "Andr.Trojan",
+    "Andr.Virus",
+    "Cert.Revoked",
+    "Doc.Dropper",
+    "Doc.Packed",
+    "Doc.Tool",
+    "Doc.Trojan",
+    "Email.Phishing",
+    "Email.Trojan",
+    "Embedded.File",
+    "Html.Exploit",
+    "Html.Tool",
+    "Html.Trojan",
+    "Java.Exploit",
+    "Java.Packer",
+    "Js.Exploit",
+    "Osx.File",
+    "Osx.Trojan",
+    "Packed.Tool",
+    "Pdf.Exploit",
+    "Pdf.Trojan",
+    "Php.Trojan",
+    "Rtf.Exploit",
+    "Spy.Tool",
+    "Swf.Spyware",
+    "Tool.Countermeasure",
+    "Tool.Tool",
+    "Unix.Adware",
+    "Unix.Coinminer",
+    "Unix.Downloader",
+    "Unix.File",
+    "Unix.Malware",
+    "Unix.Tool",
+    "Unix.Trojan",
+    "Unix.Virus",
+    "Win.Adware",
+    "Win.Coinminer",
+    "Win.Downloader",
+    "Win.Dropper",
+    "Win.Exploit",
+    "Win.File",
+    "Win.Ircbot",
+    "Win.Joke",
+    "Win.Keylogger",
+    "Win.Malware",
+    "Win.Packed",
+    "Win.Packer",
+    "Win.Proxy",
+    "Win.Ransomware",
+    "Win.Spyware",
+    "Win.Tool",
+    "Win.Trojan",
+    "Win.Virus",
 ]
 
 YON = Literal["yes", "no"]
 
 
 class ClamAVScannerOptions(BaseModel):
-    """ Builder class for configuring ClamAVScanner options.
+    """Builder class for configuring ClamAVScanner options.
 
     Attributes:
 
         - command (str): The ClamAV command to use (default: "clamscan")
 
-        
+
         - verbose (bool): Enable verbose output (default: False)
         - archive_verbose (bool): Show filenames inside scanned archives (default: False)
         - debug (bool): Enable libclamav's debug messages (default: False)
@@ -206,14 +207,16 @@ class ClamAVScannerOptions(BaseModel):
     file_list: str = None
     remove: YON = "no"
     move: str = None
-    copy: str = None # TODO: Throwing a warning due to shadowing an attribute from parent
+    copy: str = (
+        None  # TODO: Throwing a warning due to shadowing an attribute from parent
+    )
     exclude: str = None
     exclude_dir: str = None
     include: str = None
     include_dir: str = None
     bytecode: YON = "yes"
     bytecode_unsigned: YON = "no"
-    bytecode_timeout: int = 10000 # in milliseconds
+    bytecode_timeout: int = 10000  # in milliseconds
     statistics: Literal["none", "bytecode", "pcre"] = "none"
     detect_pua: YON = "no"
     exclude_pua: List[PUA_TYPES] = None
@@ -250,7 +253,7 @@ class ClamAVScannerOptions(BaseModel):
     alert_partition_intersection: YON = "no"
     nocerts: bool = False
     dumpcerts: bool = False
-    max_scantime: int = 120000 # 120s or 2min
+    max_scantime: int = 120000  # 120s or 2min
     max_filesize: int | str = "100M"
     max_scansize: int | str = "400M"
     max_files: int = 10000
@@ -277,34 +280,38 @@ class ClamAVScannerOptions(BaseModel):
         """
 
         command_list = [self.command]
-        pure_flags = set([
-            "verbose",
-            "archive_verbose",
-            "allmatch",
-            "recursive",
-            "debug",
-            "quiet",
-            "stdout",
-            "no_summary",
-            "infected",
-            "suppress_ok_results",
-            "bell",
-            "nocerts", 
-            "dumpcerts", 
-            "disable_cache"
-            ]) # The attributes with no value passed and are purely flags
+        pure_flags = set(
+            [
+                "verbose",
+                "archive_verbose",
+                "allmatch",
+                "recursive",
+                "debug",
+                "quiet",
+                "stdout",
+                "no_summary",
+                "infected",
+                "suppress_ok_results",
+                "bell",
+                "nocerts",
+                "dumpcerts",
+                "disable_cache",
+            ]
+        )  # The attributes with no value passed and are purely flags
         for field_name, field_value in self:
             flagged_field_name = f"--{field_name.replace("_", "-")}"
             if field_name == "command":
                 continue
             # Handle pure flags
             if field_name in pure_flags and field_value is not False:
-                command_list.append(flagged_field_name)   
+                command_list.append(flagged_field_name)
             # Handle everything else
             elif field_name not in pure_flags and (field_value or field_value == 0):
                 command_list.append(f"{flagged_field_name}={field_value}")
             # Check if anything was missed
             else:
-                guardian_logger.error(f"Field Name: {field_name}    Field Value: {field_value}")
-        
+                guardian_logger.error(
+                    f"Field Name: {field_name}    Field Value: {field_value}"
+                )
+
         return command_list

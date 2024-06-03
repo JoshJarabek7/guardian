@@ -4,9 +4,10 @@ import asyncio
 import datetime
 from .guardian_logger import guardian_logger
 
+
 class FreshClam:
     def __new__(cls):
-        if not hasattr(cls, 'instance'):
+        if not hasattr(cls, "instance"):
             cls.instance = super(FreshClam, cls).__new__(cls)
         return cls.instance
 

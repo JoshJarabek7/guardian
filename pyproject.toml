@@ -12,10 +12,19 @@ pydantic = "^2.7.2"
 
 
 [tool.poetry.group.test.dependencies]
-pytest ="^7.0"
+pytest = "^7.0"
 pytest-mock = "*"
 pytest-asyncio = "^0.23"
 httpx = "^0.25"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.4"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "*"
 
 [build-system]
 requires = ["poetry-core"]

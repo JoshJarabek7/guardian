@@ -7,10 +7,11 @@ from .scanner import ClamAVScanner
 import io
 import functools
 
+
 def scan_upload(scanner_options: ClamAVScannerOptions = None):
     if scanner_options is None:
         scanner_options = ClamAVScannerOptions()
-    
+
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(file: UploadFile = File(...)):
@@ -36,4 +37,3 @@ def scan_upload(scanner_options: ClamAVScannerOptions = None):
         return wrapper
 
     return decorator
-

@@ -5,6 +5,8 @@ from .options import ClamAVScannerOptions
 from .update import FreshClam
 from io import BytesIO
 from .guardian_logger import guardian_logger
+
+
 class ClamAVScanner:
     def __init__(self, options: ClamAVScannerOptions = ClamAVScannerOptions()):
         self.options = options.build_command_list()
@@ -15,7 +17,7 @@ class ClamAVScanner:
         await self.update_database()
 
         # Add the file path to the command
-        full_command = self.options +["-"]
+        full_command = self.options + ["-"]
 
         process = await asyncio.create_subprocess_exec(
             *full_command,
