@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "guardian"
 version = "0.1.0"
-description = "Utilize decorator functions on API routes with FileUpload to scan the file for viruses."
+description = "FastAPI Decorators & Middleware for Endpoint Virus Protection"
 authors = ["Josh Jarabek <jarabekjosh@icloud.com>"]
 readme = "README.md"
 
