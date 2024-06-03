@@ -9,4 +9,4 @@ class GuardianLogger(logging.Logger):
         extra_info = xtra if xtra is not None else self.extra_info
         super().info(msg, *args, extra=extra_info, *kwargs)
 
-guardian_logger = GuardianLogger()
+guardian_logger = GuardianLogger("Guardian")

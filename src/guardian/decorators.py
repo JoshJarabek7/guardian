@@ -2,27 +2,32 @@
 
 import tempfile
 from fastapi import File, UploadFile, HTTPException
-from .builder import ClamAVScannerBuilder
+from .builder import ClamAVScannerOptions
+from .scanner import ClamAVScanner
+import io
+import functools
 
-
-def clamav_scanner(scanner_builder: ClamAVScannerBuilder = None):
-    if scanner_builder is None:
-        scanner_builder = ClamAVScannerBuilder()
-
+def scan_upload(scanner_options: ClamAVScannerOptions = None):
+    if scanner_options is None:
+        scanner_options = ClamAVScannerOptions()
+    
     def decorator(func):
+        @functools.wraps(func)
         async def wrapper(file: UploadFile = File(...)):
-            scanner = scanner_builder.build()
-            if scanner.in_memory:
-                file_content = await file.read()
-                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                    temp_file.write(file_content)
-                    is_clean = await scanner.scan_file(temp_file.name)
-            else:
-                file_path = scanner.file_path or file.filename
-                with open(file_path, "wb") as f:
-                    f.write(await file.read())
-                is_clean = await scanner.scan_file(file_path)
+            scanner = ClamAVScanner(options=scanner_options)
+            bytes_io = io.BytesIO(await file.read())
+            bytes_io.seek(0)
+            with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+                temp_file.write(bytes_io.read())
+                temp_file.flush()
+                is_clean = await scanner.scan_file(temp_file.name)
+            if is_clean:
+                return await func(file)
 
+            file_path: str = file.filename
+            with open(file_path, "wb") as f:
+                f.write(await file.read())
+            is_clean = await scanner.scan_file(file_path)
             if is_clean:
                 return await func(file)
             else:
@@ -31,3 +36,4 @@ def clamav_scanner(scanner_builder: ClamAVScannerBuilder = None):
         return wrapper
 
     return decorator
+

@@ -35,6 +35,7 @@ class FreshClam:
             guardian_logger.info(stderr.decode())
 
     async def update(self) -> None:
+        guardian_logger.info("Updating!")
         if self._update_required():
             await self._update_clamav()
             self.last_updated = datetime.datetime.now()
