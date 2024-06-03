@@ -2,7 +2,7 @@
 
 import tempfile
 from fastapi import File, UploadFile, HTTPException
-from .builder import ClamAVScannerOptions
+from .options import ClamAVScannerOptions
 from .scanner import ClamAVScanner
 import io
 import functools

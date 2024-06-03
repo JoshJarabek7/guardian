@@ -1,7 +1,7 @@
 """Contains the ClamAVScanner class, which handles the actual scanning and database update functionality"""
 
 import asyncio
-from .builder import ClamAVScannerOptions
+from .options import ClamAVScannerOptions
 from .update import FreshClam
 from io import BytesIO
 from .guardian_logger import guardian_logger
