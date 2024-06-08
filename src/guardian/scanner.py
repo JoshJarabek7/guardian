@@ -48,12 +48,10 @@ class Scanner:
         )
 
         if inspect.iscoroutinefunction(file.seek):
-            guard_log.critical(msg="COROUTINE")
             await file.seek(0)
             stdout, stderr = await process.communicate(await file.read())
 
         else:
-            guard_log.critical(msg="NOT COROUTINE")
             file.seek(0)
             stdout, stderr = await process.communicate(file.getvalue())
 
