@@ -18,17 +18,7 @@ def scan_upload(scanner_options: Options = None):
             scanner = Scanner(options=scanner_options)
             bytes_io = io.BytesIO(await file.read())
             bytes_io.seek(0)
-            with tempfile.NamedTemporaryFile(delete=True) as temp_file:
-                temp_file.write(bytes_io.read())
-                temp_file.flush()
-                is_clean = await scanner.scan_file(temp_file.name)
-            if is_clean:
-                return await func(file)
-
-            file_path: str = file.filename
-            with open(file_path, "wb") as f:
-                f.write(await file.read())
-            is_clean = await scanner.scan_file(file_path)
+            is_clean = await scanner.scan_file(bytes_io)
             if is_clean:
                 return await func(file)
             else:
