@@ -15,7 +15,7 @@ class FileUploadScanMiddleware(BaseHTTPMiddleware):
     ) -> Response:
         await (
             request.body()
-        )  # DO NOT REMOVE OR ELSE IT DOES NOT WORK AND THROWS 422 I DO NOT KNOW WHY
+        )  # DO NOT REMOVE OR ELSE IT DOES NOT WORK AND THROWS 422 I DO NOT KNOW WHY LOL
         if request.method == "POST" and request.headers.get(
             "content-type", ""
         ).startswith("multipart/form-data"):

@@ -13,7 +13,8 @@ Guardian is a Python package that provides easy-to-use decorators and middleware
 - Automated checks for virus signature updates using FreshClam abstraction (COMPLETED)
 - Extensive customization options to add desired flags (COMPLETED)
 - Set default settings on startup and tweak them for specific endpoints (COMPLETED)
-- Option for compilation of ClamAV C library with pip package (IN-PROGRESS)
+- Adapters for use with different ClamAV versions (IN-PROGRESS)
+- Option for compilation of ClamAV C library to bundle installation with pip package (IN-PROGRESS)
 - Deploy to PyPI (IN-PROGRESS)
 
 ## Sanitizer (STATUS: NOT STARTED)
@@ -31,6 +32,9 @@ Guardian is a Python package that provides easy-to-use decorators and middleware
 - Sanitizer (NOT STARTED)
 - Auth (NOT STARTED)
 - There will be a lot of breaking changes, so I will not start on documentation until things become a little more stable.
+
+# Other
+- 100% Coverage Testing for unit and integration (IN-PROGRESS)
 
 ## Installation
 TODO - Not on PyPi yet, we have a long way to go. Placeholder.
