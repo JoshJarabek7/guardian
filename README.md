@@ -57,7 +57,7 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/upload")
 @scan_upload() # That's it!
 async def upload_file(file: UploadFile = File(...)):
-    # Process the clean file (decorated cleaned it already)
+    # Process the clean file (decorator cleaned it already)
     pass
 # --- END OPTION 2 ---
 ```
