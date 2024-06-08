@@ -1,21 +1,21 @@
-"""Contains the clamav_scanner decorator function"""
+"""Contains the clamav_scanner decorator function for FastAPI Routes"""
 
 import tempfile
 from fastapi import File, UploadFile, HTTPException
-from .options import ClamAVScannerOptions
-from .scanner import ClamAVScanner
+from guardian import Options
+from guardian.scanner import Scanner
 import io
 import functools
 
 
-def scan_upload(scanner_options: ClamAVScannerOptions = None):
+def scan_upload(scanner_options: Options = None):
     if scanner_options is None:
-        scanner_options = ClamAVScannerOptions()
+        scanner_options = Options()
 
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(file: UploadFile = File(...)):
-            scanner = ClamAVScanner(options=scanner_options)
+            scanner = Scanner(options=scanner_options)
             bytes_io = io.BytesIO(await file.read())
             bytes_io.seek(0)
             with tempfile.NamedTemporaryFile(delete=True) as temp_file:

@@ -1,18 +1,39 @@
 """Contains the ClamAVScanner class, which handles the actual scanning and database update functionality"""
 
 import asyncio
-from .options import ClamAVScannerOptions
-from .update import FreshClam
+import inspect
 from io import BytesIO
-from .guardian_logger import guardian_logger
+
+from guardian.logger import GuardianLogger
+from .update import FreshClam
+from guardian import Options
+from fastapi import UploadFile
+
+guard_log = GuardianLogger()
 
 
-class ClamAVScanner:
-    def __init__(self, options: ClamAVScannerOptions = ClamAVScannerOptions()):
+class Scanner:
+    """Scanner class for scanning files for malware.
+
+    Attributes:
+        - options (ClamAVScannerOptions): The options/flags to pass to the scanner (default: ClamAVScannerOptions())
+    """
+
+    def __init__(
+        self,
+        options: Options = Options(),
+    ):
         self.options = options.build_command_list()
 
-    async def scan_file(self, file: BytesIO):
+    async def scan_file(self, file: BytesIO | UploadFile):
+        """Scans a BytesIO object for malware.
 
+        Args:
+            file (BytesIO): The BytesIO object containing the file to scan.
+
+        Returns:
+            bool: Returns True if file is clean, else False
+        """
         # Ensure the signature database is up-to-date before scanning
         await self.update_database()
 
@@ -25,21 +46,30 @@ class ClamAVScanner:
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
-        file.seek(0)
-        stdout, stderr = await process.communicate(file.getvalue())
+
+        if inspect.iscoroutinefunction(file.seek):
+            guard_log.critical(msg="COROUTINE")
+            await file.seek(0)
+            stdout, stderr = await process.communicate(await file.read())
+
+        else:
+            guard_log.critical(msg="NOT COROUTINE")
+            file.seek(0)
+            stdout, stderr = await process.communicate(file.getvalue())
+
         if stdout:
-            guardian_logger.debug(stdout.decode())
+            guard_log.debug(msg=stdout.decode())
         if stderr:
-            guardian_logger.debug(stderr.decode())
+            guard_log.debug(msg=stderr.decode())
 
         if process.returncode == 0:
-            guardian_logger.info("No virus detected.")
+            guard_log.info(msg="No virus detected.")
             return True
         elif process.returncode == 1:
-            guardian_logger.warning("Virus detected.")
+            guard_log.warning(msg="Virus detected.")
             return False
         else:
-            guardian_logger.error("Error scanning.")
+            guard_log.error(msg="Error scanning.")
             return False
 
     async def update_database(self):

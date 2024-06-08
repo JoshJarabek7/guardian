@@ -1,10 +1,13 @@
 """Contains the ClamAVScannerOptions class to configure the scanner options"""
 
-from pydantic import BaseModel
 from typing import List, Literal
-from .guardian_logger import guardian_logger
 
+from pydantic import BaseModel
+import re
+import subprocess
+from guardian.logger import GuardianLogger
 
+guard_log = GuardianLogger()
 PUA_TYPES = Literal[
     "Andr.Adware",
     "Andr.Downloader",
@@ -68,14 +71,12 @@ PUA_TYPES = Literal[
 YON = Literal["yes", "no"]
 
 
-class ClamAVScannerOptions(BaseModel):
+class ScannerOptions(BaseModel):
     """Builder class for configuring ClamAVScanner options.
 
     Attributes:
 
         - command (str): The ClamAV command to use (default: "clamscan")
-
-
         - verbose (bool): Enable verbose output (default: False)
         - archive_verbose (bool): Show filenames inside scanned archives (default: False)
         - debug (bool): Enable libclamav's debug messages (default: False)
@@ -85,22 +86,14 @@ class ClamAVScannerOptions(BaseModel):
         - infected (bool): Only print infected files (default: False)
         - suppress_ok_results (bool): Skip printing OK files (default: False)
         - bell (bool): Sound bell on virus detection (default: False)
-
-
         - tempdir (str): Create temporary files in the specified directory (default: None)
-
         - leave_temps (bool): Do not remove temporary files (default: False)
         - gen_json (bool): Generate JSON metadata for the scanned files (default: False)
-
-        - database (str): The path to the ClamAV database (default: "/usr/local/share/clamav")
-
+        - database (str): The path to the ClamAV database (default: None)
         - log (str): Save scan report to FILE (default: None)
-
         - recursive (bool): Scan subdirectories recursively (default: False)
         - allmatch (bool): Continue scanning within file after finding a match (default: False)
-
         - cross_fs (str): Scan files and directories on other filesystems [yes/no] (default: yes)
-
         - follow_dir_symlinks (int): Follow directory symlinks. There are 3 options:
             - 0: Never follow directory symlinks.
             - 1 (default): Only follow directory symlinks, which are passed as direct arguments to clamscan.
@@ -110,7 +103,6 @@ class ClamAVScannerOptions(BaseModel):
             - 0: Never follow file symlinks.
             - 1 (default): Only follow file symlinks, which are passed as direct arguments to clamscan.
             - 2: Always follow file symlinks.
-
         - file_list (str): Scan files from the specified file list (default: None)
         - remove (str): Remove infected files [yes/no] (default: no)
         - move (str): Move infected files to the specified directory (default: None)
@@ -146,7 +138,6 @@ class ClamAVScannerOptions(BaseModel):
         - scan_hwp3 (str): Scan HWP3 files. If you turn off this option, the original files will still be scanned, but without additional processing. [yes/no] (default: yes)
         - scan_onenote (str): Scan OneNote files [yes/no] (default: yes)
         - scan_archive (str): Scan archives supported by libclamav. If you turn off this option, the original files will still be scanned, but without unpacking and additional processing. [yes/no] [supported by libclamav] (default: yes)
-
         - alert_broken (str): Alert on broken executable files (PE & ELF) [yes/no] (default: no)
         - alert_broken_media (str): Alert on broken graphics files (JPEG, TIFF, PNG, GIF) [yes/no] (default: no)
         - alert_encrypted (str): Alert on encrypted archives and documents [yes/no] (default: no)
@@ -159,8 +150,6 @@ class ClamAVScannerOptions(BaseModel):
         - alert_partition_intersection (str): Alert on raw DMG image files containing partition intersections [yes/no] (default: no)
         - nocerts (bool): Disable authenticode certificate chain verification in PE files (default: None)
         - dumpcerts (bool): Dump authenticode certificate chain in PE files (default: None)
-
-
         - max_scantime (int): The maximum time to scan before giving up. The value is in milliseconds. The value of 0 disables the limit. This option protects your system against DoS attacks [milliseconds] (default: 120000 = 120s or 2min)
         - max_filesize (int): Extract and scan at most #n bytes from each archive. You may pass the value in kilobytes in format xK or xk, or megabytes in format xM or xm, where x is a number. This option protects your system against DoS attacks [bytes] (default: 100M, max: 2GB)
         - max_scansize (int): Extract and scan at most #n bytes from each archive. The size the archive plus the sum of the sizes of all files within archive count toward the scan size. For example, a 1M uncompressed archive containing a single 1M inner file counts as 2M toward max-scansize. You may pass the value in kilobytes in format xK or xk, or megabytes in format xM or xm, where x is a number. This option protects your system against DoS attacks (default: 400M)
@@ -194,33 +183,34 @@ class ClamAVScannerOptions(BaseModel):
     infected: bool = False
     suppress_ok_results: bool = False
     bell: bool = False
-    tempdir: str = None
+    tempdir: str | None = None
     leave_temps: bool = False
     gen_json: bool = False
-    database: str = "/usr/local/share/clamav"
-    log: str = None
+    # database: str = "/usr/local/share/clamav"
+    database: str | None = None
+    log: str | None = None
     recursive: bool = False
     allmatch: bool = False
     cross_fs: YON = "yes"
     follow_dir_symlinks: Literal[1, 2, 3] = 1
     follow_file_symlinks: Literal[1, 2, 3] = 1
-    file_list: str = None
+    file_list: str | None = None
     remove: YON = "no"
-    move: str = None
-    copy: str = (
+    move: str | None = None
+    copy_atr: str | None = (
         None  # TODO: Throwing a warning due to shadowing an attribute from parent
     )
-    exclude: str = None
-    exclude_dir: str = None
-    include: str = None
-    include_dir: str = None
+    exclude: str | None = None
+    exclude_dir: str | None = None
+    include: str | None = None
+    include_dir: str | None = None
     bytecode: YON = "yes"
     bytecode_unsigned: YON = "no"
     bytecode_timeout: int = 10000  # in milliseconds
     statistics: Literal["none", "bytecode", "pcre"] = "none"
     detect_pua: YON = "no"
-    exclude_pua: List[PUA_TYPES] = None
-    include_pua: List[PUA_TYPES] = None
+    exclude_pua: List[PUA_TYPES] | None = None
+    include_pua: List[PUA_TYPES] | None = None
     detect_structured: YON = "no"
     structured_ssn_format: Literal[0, 1, 2] = 0
     structured_ssn_count: int = 3
@@ -272,13 +262,32 @@ class ClamAVScannerOptions(BaseModel):
     pcre_max_filesize: int = 100000000
     disable_cache: bool = False
 
+    def get_virus_db_directory(self):
+        try:
+            # Execute the clamconf command and capture its output
+            output = subprocess.check_output(["clamconf"], text=True)
+
+            # Use a regular expression to find the line containing the database directory
+            pattern = r"DatabaseDirectory\s*=\s*\"?([^\"\n]+)"
+            match = re.search(pattern, output, re.MULTILINE)
+
+            if match:
+                return match.group(1)
+            else:
+                raise ValueError(
+                    "Unable to find virus database directory in clamconf output."
+                )
+
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Error executing clamconf: {e.stderr}") from e
+
     def build_command_list(self) -> List[str]:
         """Builds a list of command arguments based on the set attributes.
-
         Returns:
             List[str]: A list of command-line arguments for ClamAV.
         """
-
+        if self.database is None:
+            self.database = self.get_virus_db_directory()
         command_list = [self.command]
         pure_flags = set(
             [
@@ -288,6 +297,8 @@ class ClamAVScannerOptions(BaseModel):
                 "recursive",
                 "debug",
                 "quiet",
+                "gen_json",
+                "leave_temps",
                 "stdout",
                 "no_summary",
                 "infected",
@@ -297,21 +308,30 @@ class ClamAVScannerOptions(BaseModel):
                 "dumpcerts",
                 "disable_cache",
             ]
-        )  # The attributes with no value passed and are purely flags
+        )
+
         for field_name, field_value in self:
-            flagged_field_name = f"--{field_name.replace("_", "-")}"
-            if field_name == "command":
+            flagged_field_name = f"--{field_name.replace('_', '-')}"
+            if field_name == "copy_atr":
+                if field_value is None:
+                    continue
+                command_list.append(f"--copy={field_value}")
+            elif field_name == "command":
                 continue
             # Handle pure flags
-            if field_name in pure_flags and field_value is not False:
-                command_list.append(flagged_field_name)
-            # Handle everything else
-            elif field_name not in pure_flags and (field_value or field_value == 0):
+            elif field_name in pure_flags:
+                if field_value:
+                    command_list.append(flagged_field_name)
+            # Handle lists
+            elif isinstance(field_value, list):
+                if field_value:
+                    command_list.append(f"{flagged_field_name}={','.join(field_value)}")
+            # Handle other fields
+            elif field_value is not None:
                 command_list.append(f"{flagged_field_name}={field_value}")
-            # Check if anything was missed
             else:
-                guardian_logger.error(
-                    f"Field Name: {field_name}    Field Value: {field_value}"
+                guard_log.debug(
+                    msg=f"Field Name: {field_name} Field Value: {field_value}"
                 )
 
         return command_list

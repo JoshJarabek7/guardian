@@ -1,8 +1,10 @@
-""" Contains the Freshclam Updater Class, which handles the updates of ClamAV's malware database """
+"""Contains the Freshclam Updater Class, which handles the updates of ClamAV's malware database"""
 
 import asyncio
 import datetime
-from .guardian_logger import guardian_logger
+from guardian.logger import GuardianLogger
+
+guard_log = GuardianLogger()
 
 
 class FreshClam:
@@ -31,12 +33,12 @@ class FreshClam:
         stdout, stderr = await process.communicate()
         await process.wait()
         if stdout:
-            guardian_logger.info(stdout.decode())
+            guard_log.info(msg=stdout.decode())
         if stderr:
-            guardian_logger.info(stderr.decode())
+            guard_log.info(msg=stderr.decode())
 
     async def update(self) -> None:
-        guardian_logger.info("Updating!")
+        guard_log.info(msg="Updating!")
         if self._update_required():
             await self._update_clamav()
             self.last_updated = datetime.datetime.now()
