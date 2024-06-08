@@ -1,6 +1,5 @@
 """Contains the clamav_scanner decorator function for FastAPI Routes"""
 
-import tempfile
 from fastapi import File, UploadFile, HTTPException
 from guardian import Options
 from guardian.scanner import Scanner

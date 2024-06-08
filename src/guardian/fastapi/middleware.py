@@ -1,4 +1,3 @@
-from logging import DEBUG
 from starlette.middleware.base import BaseHTTPMiddleware
 from guardian.scanner import Scanner
 from guardian.logger import GuardianLogger
@@ -8,13 +7,15 @@ from starlette.responses import Response
 from starlette.middleware.base import RequestResponseEndpoint
 
 guard_log = GuardianLogger()
-guard_log.setLevel(DEBUG)
 
 
 class FileUploadScanMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
+        await (
+            request.body()
+        )  # DO NOT REMOVE OR ELSE IT DOES NOT WORK AND THROWS 422 I DO NOT KNOW WHY
         if request.method == "POST" and request.headers.get(
             "content-type", ""
         ).startswith("multipart/form-data"):
@@ -33,12 +34,12 @@ class FileUploadScanMiddleware(BaseHTTPMiddleware):
 
     async def detect_virus(self, file: UploadFile):
         scanner = Scanner()
-        file.file.seek(0)  # Ensure the file pointer is at the start
+        file.file.seek(0)
         result = await scanner.scan_file(file)
         if not result:
             guard_log.critical(msg=f"File {file.filename} is infected.")
             return True
-        file.file.seek(0)  # Reset the file pointer to allow re-reading
+        file.file.seek(0)
         guard_log.info(msg=f"File {file.filename} is clean.")
         return False
 

@@ -460,12 +460,6 @@ def test_build_command_list():
     command_list = options.build_command_list()
     real_options_set = set(command_list)
     expected_command_set = set(expected_command)
-    # print(len(real_options_set))
-    # print(len(expected_command_set))
-    # missing_in_real = expected_command_set - real_options_set
-    # missing_in_expected = real_options_set - expected_command_set
-    # print(f"Missing in real command list: {missing_in_real}")
-    # print(f"Missing in expected command list: {missing_in_expected}")
     assert command_list == expected_command
     assert real_options_set == expected_command_set
     assert len(real_options_set) == len(expected_command_set)
@@ -473,10 +467,8 @@ def test_build_command_list():
 
 def test_get_virus_db_directory(caplog):
     caplog.set_level(logging.INFO)
-    logger = logging.getLogger(__name__)
     options = ScannerOptions()
     db_directory = options.get_virus_db_directory()
-    logger.info(f"DB DIRECTORY: {db_directory}")
     assert db_directory
 
 
