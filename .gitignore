@@ -178,3 +178,7 @@ pyrightconfig.json
 clean_file.txt
 infected_file.txt
 poetry.lock
+
+.vscode/*
+.vscode
+.vscode/
