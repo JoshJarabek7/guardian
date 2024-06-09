@@ -182,3 +182,5 @@ poetry.lock
 .vscode/*
 .vscode
 .vscode/
+
+pyrightconfig.json
