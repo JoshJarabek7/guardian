@@ -15,6 +15,7 @@ Guardian is a Python package that provides easy-to-use decorators and middleware
 - Set default settings on startup and tweak them for specific endpoints (COMPLETED)
 - Adapters for use with different ClamAV versions (IN-PROGRESS)
 - Option for compilation of ClamAV C library to bundle installation with pip package (IN-PROGRESS)
+- C-Bindings for libclamav (IN-PROGRESS - need to investigate FOSS licensing for it)
 - Deploy to PyPI (IN-PROGRESS)
 
 ## Sanitizer (STATUS: NOT STARTED)
