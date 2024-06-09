@@ -2,9 +2,9 @@
 
 import asyncio
 import datetime
-from guardian.logger import GuardianLogger
+from hiss.logger import Hisss
 
-guard_log = GuardianLogger()
+hisss = Hisss()
 
 
 class FreshClam:
@@ -33,12 +33,12 @@ class FreshClam:
         stdout, stderr = await process.communicate()
         await process.wait()
         if stdout:
-            guard_log.info(msg=stdout.decode())
+            hisss.info(msg=stdout.decode())
         if stderr:
-            guard_log.info(msg=stderr.decode())
+            hisss.info(msg=stderr.decode())
 
     async def update(self) -> None:
-        guard_log.info(msg="Updating!")
+        hisss.info(msg="Updating!")
         if self._update_required():
             await self._update_clamav()
             self.last_updated = datetime.datetime.now()

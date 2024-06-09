@@ -4,12 +4,12 @@ import asyncio
 import inspect
 from io import BytesIO
 
-from guardian.logger import GuardianLogger
+from hiss.logger import Hisss
 from .update import FreshClam
-from guardian import Options
+from hiss.options import ScannerOptions as Options
 from starlette.datastructures import UploadFile
 
-guard_log = GuardianLogger()
+hisss = Hisss()
 
 
 class Scanner:
@@ -58,18 +58,18 @@ class Scanner:
         await file.seek(0)
         stdout, stderr = await process.communicate(await file.read())
         if stdout:
-            guard_log.debug(msg=stdout.decode())
+            hisss.debug(msg=stdout.decode())
         if stderr:
-            guard_log.debug(msg=stderr.decode())
+            hisss.debug(msg=stderr.decode())
 
         if process.returncode == 0:
-            guard_log.info(msg="No virus detected.")
+            hisss.info(msg="No virus detected.")
             return True
         elif process.returncode == 1:
-            guard_log.warning(msg="Virus detected.")
+            hisss.warning(msg="Virus detected.")
             return False
         else:
-            guard_log.error(msg="Error scanning.")
+            hisss.error(msg="Error scanning.")
             return False
 
     async def _scan_non_upload_file(self, file: BytesIO):
@@ -89,18 +89,18 @@ class Scanner:
         file.seek(0)
         stdout, stderr = await process.communicate(file.getvalue())
         if stdout:
-            guard_log.debug(msg=stdout.decode())
+            hisss.debug(msg=stdout.decode())
         if stderr:
-            guard_log.debug(msg=stderr.decode())
+            hisss.debug(msg=stderr.decode())
 
         if process.returncode == 0:
-            guard_log.info(msg="No virus detected.")
+            hisss.info(msg="No virus detected.")
             return True
         elif process.returncode == 1:
-            guard_log.warning(msg="Virus detected.")
+            hisss.warning(msg="Virus detected.")
             return False
         else:
-            guard_log.error(msg="Error scanning.")
+            hisss.error(msg="Error scanning.")
             return False
 
     async def update_database(self):

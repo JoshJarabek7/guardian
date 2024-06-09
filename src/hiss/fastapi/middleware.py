@@ -1,12 +1,12 @@
 from starlette.middleware.base import BaseHTTPMiddleware
-from guardian.scanner import Scanner
-from guardian.logger import GuardianLogger
+from hiss.scanner import Scanner
+from hiss.logger import Hisss
 from starlette.datastructures import UploadFile
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.middleware.base import RequestResponseEndpoint
 
-guard_log = GuardianLogger()
+guard_log = Hisss()
 
 
 class FileUploadScanMiddleware(BaseHTTPMiddleware):

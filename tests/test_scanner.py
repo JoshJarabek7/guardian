@@ -4,8 +4,8 @@ import pytest
 import asyncio
 from io import BytesIO
 from unittest.mock import patch, AsyncMock
-from guardian.scanner import Scanner
-from guardian.update import FreshClam
+from hiss.scanner import Scanner
+from hiss.update import FreshClam
 
 
 @pytest.mark.asyncio

@@ -1,8 +1,8 @@
-# Guardian (WORK IN PROGRESS)
+# Hiss 🐍 (WORK IN PROGRESS)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Guardian is a Python package that provides easy-to-use decorators and middleware for FastAPI/Starlette routes to enhance security and functionality. It aims to offer modular and customizable solutions for common security features, allowing developers to choose the batteries they need without the bloat.
+Hiss 🐍 is a Python package that provides easy-to-use decorators and middleware for FastAPI/Starlette routes to enhance security and functionality. It aims to offer modular and customizable solutions for common security features, allowing developers to choose the batteries they need without the bloat.
 
 # Roadmap
 
@@ -54,8 +54,8 @@ TODO - Not on PyPi yet, we have a long way to go. Placeholder.
 
 ```python
 from fastapi import FastAPI, File, UploadFile
-from guardian import scan_upload
-from guardian.fastapi.middleware import FileUploadScanMiddleware
+from hiss import scan_upload
+from hiss.fastapi.middleware import FileUploadScanMiddleware
 
 app = FastAPI()
 

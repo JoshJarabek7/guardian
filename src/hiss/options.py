@@ -5,9 +5,9 @@ from typing import List, Literal
 from pydantic import BaseModel
 import re
 import subprocess
-from guardian.logger import GuardianLogger
+from hiss.logger import Hisss
 
-guard_log = GuardianLogger()
+hisss = Hisss()
 PUA_TYPES = Literal[
     "Andr.Adware",
     "Andr.Downloader",
@@ -330,8 +330,6 @@ class ScannerOptions(BaseModel):
             elif field_value is not None:
                 command_list.append(f"{flagged_field_name}={field_value}")
             else:
-                guard_log.debug(
-                    msg=f"Field Name: {field_name} Field Value: {field_value}"
-                )
+                hisss.debug(msg=f"Field Name: {field_name} Field Value: {field_value}")
 
         return command_list

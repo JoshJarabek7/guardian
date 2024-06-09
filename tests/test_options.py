@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from guardian.options import ScannerOptions
+from hiss.options import ScannerOptions
 import logging
 
 

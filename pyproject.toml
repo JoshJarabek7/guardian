@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "guardian"
+name = "hiss"
 version = "0.1.0"
-description = "FastAPI Decorators & Middleware for Endpoint Virus Protection"
+description = "Starlette Decorators & Middleware for Endpoint Virus Protection"
 authors = ["Josh Jarabek <jarabekjosh@icloud.com>"]
 readme = "README.md"
 

@@ -1,10 +1,10 @@
 import io
 from fastapi import FastAPI, File, Response, UploadFile
 from fastapi.testclient import TestClient
-from guardian.fastapi.middleware import FileUploadScanMiddleware
-from guardian.logger import GuardianLogger
+from hiss.fastapi.middleware import FileUploadScanMiddleware
+from hiss.logger import Hisss
 
-guard_log = GuardianLogger()
+guard_log = Hisss()
 app = FastAPI()
 app.add_middleware(FileUploadScanMiddleware)
 client = TestClient(app)
