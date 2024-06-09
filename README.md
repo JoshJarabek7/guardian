@@ -39,9 +39,13 @@ Guardian is a Python package that provides easy-to-use decorators and middleware
 - Easy Forwarding Scripts to forward files or alerts to specific endpoints (NOT STARTED)
 - Integrate AMQP (NOT STARTED)
 
-
 ## Other
 - 100% Coverage Testing for unit and integration (IN-PROGRESS)
+- WebAssembly Runtime for browser? (TBD / NOT-STARTED)
+- Sandboxing (IN-PROGRESS)
+- Completely in-memory (INVESTIGATING)
+
+Feel free to discuss or suggest ideas and features in the Discussions tab!
 
 ## Installation
 TODO - Not on PyPi yet, we have a long way to go. Placeholder.
