@@ -33,7 +33,13 @@ Guardian is a Python package that provides easy-to-use decorators and middleware
 - Auth (NOT STARTED)
 - There will be a lot of breaking changes, so I will not start on documentation until things become a little more stable.
 
-# Other
+## Templating Repo
+- Create Dockerfile templates and scripting for serverless scanning to keep malicious files separate from web servers (NOT STARTED)
+- Easy Forwarding Scripts to forward files or alerts to specific endpoints (NOT STARTED)
+- Integrate AMQP (NOT STARTED)
+
+
+## Other
 - 100% Coverage Testing for unit and integration (IN-PROGRESS)
 
 ## Installation
